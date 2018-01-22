@@ -10,6 +10,8 @@
 #import "MJRefreshComponent.h"
 
 @interface MJRefreshHeader : MJRefreshComponent
+
+@property (assign, nonatomic) CGFloat insetTDelta;
 /** 创建header */
 + (instancetype)headerWithRefreshingBlock:(MJRefreshComponentRefreshingBlock)refreshingBlock;
 /** 创建header */

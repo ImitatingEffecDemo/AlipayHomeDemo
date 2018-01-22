@@ -10,7 +10,7 @@
 #import "MJRefreshHeader.h"
 
 @interface MJRefreshHeader()
-@property (assign, nonatomic) CGFloat insetTDelta;
+
 @end
 
 @implementation MJRefreshHeader
