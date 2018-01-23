@@ -77,7 +77,7 @@ class HomeTopView: UIView {
         
         self.clipsToBounds = true
         
-        self.backgroundColor = UIColor.green.withAlphaComponent(0.3)
+        self.backgroundColor = UIColor.green.withAlphaComponent(0.4)
         
         self.addSubview(miniMenuView)
         self.addSubview(maxMenuView)

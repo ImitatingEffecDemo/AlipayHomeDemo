@@ -13,11 +13,13 @@ import MJRefresh
 class HomeViewController: UIViewController {
     
     fileprivate let auxiliaryScrollViewTag = 23745
-    
+    /// 是否是代码引起的滑动，而不是手拖动引起的滑动
     fileprivate var isCodeAdjustScroll: Bool = false
     
+    /// 除了tableview外，上面的视图
     var topView: HomeTopView!
     var tableView: UITableView!
+    /// 辅助联动效果的scrollview
     var auxiliaryScrollView: UIScrollView!
     
     override func viewDidLoad() {
@@ -28,24 +30,25 @@ class HomeViewController: UIViewController {
     
     fileprivate func makeUI() {
         
+        topView = HomeTopView()
+        self.view.addSubview(topView)
+        topView.snp.makeConstraints { (make) in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(HomeTopView.maxHeight)
+        }
+    
         auxiliaryScrollView = UIScrollView()
         auxiliaryScrollView.tag = auxiliaryScrollViewTag
         auxiliaryScrollView.showsVerticalScrollIndicator = false
         auxiliaryScrollView.delegate = self
-        
         self.view.addSubview(auxiliaryScrollView)
         auxiliaryScrollView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
+            make.top.equalTo(self.topView.snp.bottom)
+            make.left.right.bottom.equalToSuperview()
         }
         
-        topView = HomeTopView()
-        self.view.addSubview(topView)
-        topView.snp.makeConstraints { (make) in
-            make.top.left.equalToSuperview()
-            make.width.equalTo(self.auxiliaryScrollView)
-            make.height.equalTo(HomeTopView.maxHeight)
-        }
-    
+        auxiliaryScrollView.clipsToBounds = true
+        
         self.view.layoutIfNeeded()
         
         tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -55,26 +58,46 @@ class HomeViewController: UIViewController {
         tableView.register(UITableViewCell.classForCoder(),
                            forCellReuseIdentifier: NSStringFromClass(UITableViewCell.classForCoder()))
         auxiliaryScrollView.addSubview(tableView)
+        tableView.backgroundColor = UIColor.clear
+        tableView.tableFooterView = UIView()
         tableView.snp.makeConstraints { (make) in
+            // ⚠️⚠️⚠️这里很重要，让tableview的顶部挨着topView的底部，而不是与辅助scrollview的顶部持平
             make.top.equalTo(self.topView.snp.bottom)
             make.left.equalToSuperview()
-            make.width.equalTo(self.topView)
-
-            make.height.equalTo(screenHieght-self.topView.hz_height)
+            make.width.height.equalTo(self.auxiliaryScrollView)
         }
 
         self.view.layoutIfNeeded()
-        auxiliaryScrollView.contentSize = CGSize(width: 0, height: tableView.contentSize.height+HomeTopView.maxHeight)
         
         
-        tableView.mj_header = MJRefreshStateHeader(refreshingBlock: { [unowned self] in
+        if tableView.contentSize.height <= screenHieght-HomeTopView.minHieght {
+            /// 解决tableview内容少的问题，后面的额外加的100可适当调整
+            auxiliaryScrollView.contentSize = CGSize(width: 0, height: screenHieght-HomeTopView.minHieght+100)
+        } else {
+            auxiliaryScrollView.contentSize = CGSize(width: 0, height: tableView.contentSize.height + HomeTopView.maxHegithDiffer)
+        }
+        
+        
+        print(tableView.contentSize.height, "   ", auxiliaryScrollView.contentSize.height)
+        
+        /// ⚠️⚠️⚠️注意：上拉加载和下拉刷新谁放在辅助scrollview视图上的
+        auxiliaryScrollView.mj_header =  MJRefreshStateHeader(refreshingBlock: { [unowned self] in
             print("✅  ✅  ✅  ✅  ✅  正在刷新")
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
                 
                 print("✅  ✅  ✅  ✅  ✅  刷新结束")
                 
-                self.tableView.mj_header.endRefreshing()
-                self.auxiliaryScrollView.contentOffset = CGPoint.zero
+                self.auxiliaryScrollView.mj_header.endRefreshing()
+            })
+        })
+        
+        auxiliaryScrollView.mj_footer = MJRefreshBackStateFooter(refreshingBlock: { [unowned self] in
+            print("✅  ✅  ✅  ✅  ✅  正在加载更多")
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+                
+                print("✅  ✅  ✅  ✅  ✅  加载更多结束")
+                
+                self.auxiliaryScrollView.mj_footer.endRefreshing()
             })
         })
 
@@ -87,6 +110,8 @@ extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        print(scrollView.contentOffset.y, "   ", tableView.contentOffset.y)
+        
         guard scrollView.tag == auxiliaryScrollViewTag else { return }
         if isCodeAdjustScroll { return }
         
@@ -97,15 +122,16 @@ extension HomeViewController: UIScrollViewDelegate {
         if offectY <= 0 {
             
             /// 处于显示大菜单状态
-            
             tableView.contentOffset = scrollView.contentOffset
+            
             topView.snp.updateConstraints({ (make) in
                 make.height.equalTo(HomeTopView.maxHeight)
             })
-            tableView.snp.updateConstraints({ (make) in
-                make.height.equalTo(screenHieght - HomeTopView.maxHeight)
-            })
+
+            
             view.layoutIfNeeded()
+            
+            print("offectY <= 0")
             
         } else if offectY <= HomeTopView.maxHegithDiffer {
             
@@ -115,10 +141,9 @@ extension HomeViewController: UIScrollViewDelegate {
                 make.height.equalTo(HomeTopView.maxHeight - offectY)
             })
             view.layoutIfNeeded()
-            tableView.snp.updateConstraints({ (make) in
-                make.height.equalTo(screenHieght - self.topView.hz_height)
-            })
-            view.layoutIfNeeded()
+            
+            print("HomeTopView.maxHegithDiffe")
+//            print(scrollView.contentSize.height)
             
         } else {
             
@@ -127,15 +152,12 @@ extension HomeViewController: UIScrollViewDelegate {
             topView.snp.updateConstraints({ (make) in
                 make.height.equalTo(HomeTopView.minHieght)
             })
-            
-            tableView.snp.updateConstraints({ (make) in
-                make.height.equalTo(screenHieght - HomeTopView.minHieght)
-            })
+
             view.layoutIfNeeded()
             tableView.contentOffset = CGPoint(x: 0, y: offectY-HomeTopView.maxHegithDiffer)
-            
+            print("else")
         }
-
+        
         topView.adjustContent()
         
         self.isCodeAdjustScroll = false
@@ -144,48 +166,13 @@ extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        let offectY = scrollView.contentOffset.y
-        
-        if offectY < -MJRefreshHeaderHeight  {
-            
-//            self.isCodeAdjustScroll = true
-            
-//            self.tableViewRefreshing()
-            self.tableView.mj_header.beginRefreshing()
-            self.auxiliaryScrollView.contentOffset = CGPoint(x: 0, y: 95)
-//            self.tableView.mj_header.state = MJRefreshState.refreshing
-            
-            
-//            self.isCodeAdjustScroll = false
-        }
-    
-//        /** 普通闲置状态 */
-//        MJRefreshStateIdle = 1,
-//        /** 松开就可以进行刷新的状态 */
-//        MJRefreshStatePulling,
-//        /** 正在刷新中的状态 */
-//        MJRefreshStateRefreshing,
-//        /** 即将刷新的状态 */
-//        MJRefreshStateWillRefresh,
-//        /** 所有数据加载完毕，没有更多的数据了 */
-//        MJRefreshStateNoMoreData
-        
         if fabs(velocity.y) <= 0.1 {
             scrollViewEndScrollAdjust()
         }
 
     }
     
-    func tableViewRefreshing() {
 
-        self.tableView.mj_insetT = MJRefreshHeaderHeight
-        self.auxiliaryScrollView.mj_insetT = MJRefreshHeaderHeight
-        
-//        self.tableView.mj_header.
-//        self.insetTDelta = _scrollViewOriginalInset.top - insetT;
-//        self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: MJRefreshHeaderHeight, left: 0, bottom: 0, right: 0)
-//        self.auxiliaryScrollView.scrollIndicatorInsets = UIEdgeInsets(top: MJRefreshHeaderHeight, left: 0, bottom: 0, right: 0)
-    }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
@@ -260,7 +247,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         print("点击了第 \(indexPath.row) 个cell")
     }
 }
-
 
 
 
