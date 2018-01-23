@@ -69,16 +69,12 @@ class HomeViewController: UIViewController {
 
         self.view.layoutIfNeeded()
         
-        
-        if tableView.contentSize.height <= screenHieght-HomeTopView.minHieght {
+        if tableView.contentSize.height <= screenHeight-HomeTopView.minHieght {
             /// 解决tableview内容少的问题，后面的额外加的100可适当调整
-            auxiliaryScrollView.contentSize = CGSize(width: 0, height: screenHieght-HomeTopView.minHieght+100)
+            auxiliaryScrollView.contentSize = CGSize(width: 0, height: screenHeight-HomeTopView.minHieght+100)
         } else {
             auxiliaryScrollView.contentSize = CGSize(width: 0, height: tableView.contentSize.height + HomeTopView.maxHegithDiffer)
         }
-        
-        
-        print(tableView.contentSize.height, "   ", auxiliaryScrollView.contentSize.height)
         
         /// ⚠️⚠️⚠️注意：上拉加载和下拉刷新谁放在辅助scrollview视图上的
         auxiliaryScrollView.mj_header =  MJRefreshStateHeader(refreshingBlock: { [unowned self] in
@@ -105,12 +101,10 @@ class HomeViewController: UIViewController {
     
 }
 
-
+//MARK: --------------- UIScrollViewDelegate ------------------
 extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        print(scrollView.contentOffset.y, "   ", tableView.contentOffset.y)
         
         guard scrollView.tag == auxiliaryScrollViewTag else { return }
         if isCodeAdjustScroll { return }
@@ -127,11 +121,8 @@ extension HomeViewController: UIScrollViewDelegate {
             topView.snp.updateConstraints({ (make) in
                 make.height.equalTo(HomeTopView.maxHeight)
             })
-
             
             view.layoutIfNeeded()
-            
-            print("offectY <= 0")
             
         } else if offectY <= HomeTopView.maxHegithDiffer {
             
@@ -141,10 +132,6 @@ extension HomeViewController: UIScrollViewDelegate {
                 make.height.equalTo(HomeTopView.maxHeight - offectY)
             })
             view.layoutIfNeeded()
-            
-            print("HomeTopView.maxHegithDiffe")
-//            print(scrollView.contentSize.height)
-            
         } else {
             
             /// 处于显示小菜单之间的状态
@@ -155,9 +142,10 @@ extension HomeViewController: UIScrollViewDelegate {
 
             view.layoutIfNeeded()
             tableView.contentOffset = CGPoint(x: 0, y: offectY-HomeTopView.maxHegithDiffer)
-            print("else")
+
         }
         
+        /// 去调整上面视图内容视图
         topView.adjustContent()
         
         self.isCodeAdjustScroll = false
@@ -171,7 +159,6 @@ extension HomeViewController: UIScrollViewDelegate {
         }
 
     }
-    
 
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -229,7 +216,7 @@ extension HomeViewController: UIScrollViewDelegate {
     }
 }
 
-
+//MARK: --------------- UITableViewDelegate, UITableViewDataSource ------------------
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

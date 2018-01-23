@@ -9,20 +9,30 @@
 import UIKit
 
 let screenWidth: CGFloat = UIScreen.main.bounds.size.width
-let screenHieght: CGFloat = UIScreen.main.bounds.size.height
+let screenHeight: CGFloat = UIScreen.main.bounds.size.height
+let is_iPhone_X : Bool = ((screenHeight == 812 && screenWidth == 375) || (screenHeight == 372 && screenWidth == 812))
 
 extension HomeTopView {
-    static let topViewTopMargin: CGFloat = 20
+    /// 初始时小菜单里顶部的间距
+    static let topViewTopMargin: CGFloat = 20 + (is_iPhone_X ? 14 : 0)
+    /// 初始时小菜单高度
     static let miniMenuHeight: CGFloat = 44
-    static let maxMenuHeight: CGFloat = 70
-    static let topViewHieght: CGFloat = miniMenuHeight
-    static let maxMenuBottomMargin: CGFloat = 20
+    /// 初始时大菜单高度
+    static let maxMenuHeight: CGFloat = 60
+    /// 初始时大小菜单之间的间距
+    static let middleMargin: CGFloat = 10
+    /// 初始时大菜单离底部的间隙
+    static let maxMenuBottomMargin: CGFloat = 8
     
+    /// 整个视图允许的最小高度
     static let minHieght: CGFloat = miniMenuHeight + topViewTopMargin
-    static fileprivate(set) var maxHeight: CGFloat = 165
-    static fileprivate(set) var maxHegithDiffer: CGFloat = maxHeight - minHieght
+    /// 整个视图允许的最大高度
+    static let maxHeight: CGFloat = minHieght + middleMargin + maxMenuHeight + maxMenuBottomMargin
+    /// 整个视图允许的最大最小高度差
+    static let maxHegithDiffer: CGFloat = maxHeight - minHieght
 }
 
+//MARK: --------------- 拓展计算属性，方便本文件访问类属性 ------------------
 extension HomeTopView {
     fileprivate var topViewTopMargin: CGFloat {
         return HomeTopView.topViewTopMargin
@@ -33,9 +43,7 @@ extension HomeTopView {
     fileprivate var maxMenuHeight: CGFloat {
         return HomeTopView.maxMenuHeight
     }
-    fileprivate var topViewHieght: CGFloat {
-        return HomeTopView.topViewHieght
-    }
+
     fileprivate var maxMenuBottomMargin: CGFloat {
         return HomeTopView.maxMenuBottomMargin
     }
