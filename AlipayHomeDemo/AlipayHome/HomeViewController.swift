@@ -60,23 +60,27 @@ class HomeViewController: UIViewController {
         auxiliaryScrollView.addSubview(tableView)
         tableView.backgroundColor = UIColor.clear
         tableView.tableFooterView = UIView()
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        }
         tableView.snp.makeConstraints { (make) in
             // ⚠️⚠️⚠️这里很重要，让tableview的顶部挨着topView的底部，而不是与辅助scrollview的顶部持平
             make.top.equalTo(self.topView.snp.bottom)
             make.left.equalToSuperview()
-            make.width.height.equalTo(self.auxiliaryScrollView)
+            make.width.equalTo(self.auxiliaryScrollView)
+            make.bottom.equalTo(self.view)
         }
 
         self.view.layoutIfNeeded()
         
         if tableView.contentSize.height <= screenHeight-HomeTopView.minHieght {
-            /// 解决tableview内容少的问题，后面的额外加的100可适当调整
+            /// 解决tableview内容少体验不好的的问题，后面的额外加的100可适当调整
             auxiliaryScrollView.contentSize = CGSize(width: 0, height: screenHeight-HomeTopView.minHieght+100)
         } else {
             auxiliaryScrollView.contentSize = CGSize(width: 0, height: tableView.contentSize.height + HomeTopView.maxHegithDiffer)
         }
         
-        /// ⚠️⚠️⚠️注意：上拉加载和下拉刷新谁放在辅助scrollview视图上的
+        /// ⚠️⚠️⚠️注意：上拉加载和下拉刷新是放在辅助scrollview视图上的
         auxiliaryScrollView.mj_header =  MJRefreshStateHeader(refreshingBlock: { [unowned self] in
             print("✅  ✅  ✅  ✅  ✅  正在刷新")
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
@@ -155,6 +159,7 @@ extension HomeViewController: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
         if fabs(velocity.y) <= 0.1 {
+            /// 很难处于这种状态
             scrollViewEndScrollAdjust()
         }
 
@@ -163,6 +168,7 @@ extension HomeViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
+        /// scrollview结束的调整（确保滑动到最终状态）
         scrollViewEndScrollAdjust()
     }
 
@@ -180,7 +186,6 @@ extension HomeViewController: UIScrollViewDelegate {
             isCodeAdjustScroll = false
         } else {
             let differ = HomeTopView.maxHeight - topHieght
-            
             
             if differ < HomeTopView.maxHegithDiffer*0.4 {
                 

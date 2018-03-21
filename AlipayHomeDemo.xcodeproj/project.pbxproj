@@ -13,8 +13,7 @@
 		0B4C85F32011F3ED00043C46 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B4C85F12011F3ED00043C46 /* LaunchScreen.storyboard */; };
 		0B4C85FC2011F53400043C46 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4C85FB2011F53400043C46 /* HomeViewController.swift */; };
 		0B4C86002011F6AE00043C46 /* HomeTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4C85FF2011F6AE00043C46 /* HomeTopView.swift */; };
-		0B774491201581A20032A969 /* VVVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B774490201581A20032A969 /* VVVViewController.swift */; };
-		0B7744932015D65E0032A969 /* HZUIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7744922015D65E0032A969 /* HZUIViewExtension.swift */; };
+		0B7744932015D65E0032A969 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7744922015D65E0032A969 /* UIViewExtension.swift */; };
 		D285D15D6A1263CF2AB1FBAF /* Pods_AlipayHomeDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4E6BA88BA653EFAB46499E5 /* Pods_AlipayHomeDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,8 +27,7 @@
 		0B4C85F42011F3ED00043C46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B4C85FB2011F53400043C46 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0B4C85FF2011F6AE00043C46 /* HomeTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTopView.swift; sourceTree = "<group>"; };
-		0B774490201581A20032A969 /* VVVViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VVVViewController.swift; sourceTree = "<group>"; };
-		0B7744922015D65E0032A969 /* HZUIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HZUIViewExtension.swift; sourceTree = "<group>"; };
+		0B7744922015D65E0032A969 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		8DCE49CE03E3EEF4F208F3C6 /* Pods-AlipayHomeDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AlipayHomeDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AlipayHomeDemo/Pods-AlipayHomeDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		90F311C54A4390B118B458C6 /* Pods-AlipayHomeDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AlipayHomeDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-AlipayHomeDemo/Pods-AlipayHomeDemo.release.xcconfig"; sourceTree = "<group>"; };
 		B4E6BA88BA653EFAB46499E5 /* Pods_AlipayHomeDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AlipayHomeDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +68,6 @@
 			children = (
 				0B4C85FA2011F51700043C46 /* AlipayHome */,
 				0B4C85E82011F3ED00043C46 /* AppDelegate.swift */,
-				0B774490201581A20032A969 /* VVVViewController.swift */,
 				0B4C85EC2011F3ED00043C46 /* Main.storyboard */,
 				0B4C85EF2011F3ED00043C46 /* Assets.xcassets */,
 				0B4C85F12011F3ED00043C46 /* LaunchScreen.storyboard */,
@@ -85,7 +82,7 @@
 			children = (
 				0B4C85FB2011F53400043C46 /* HomeViewController.swift */,
 				0B4C85FF2011F6AE00043C46 /* HomeTopView.swift */,
-				0B7744922015D65E0032A969 /* HZUIViewExtension.swift */,
+				0B7744922015D65E0032A969 /* UIViewExtension.swift */,
 			);
 			path = AlipayHome;
 			sourceTree = "<group>";
@@ -239,10 +236,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B4C86002011F6AE00043C46 /* HomeTopView.swift in Sources */,
-				0B7744932015D65E0032A969 /* HZUIViewExtension.swift in Sources */,
+				0B7744932015D65E0032A969 /* UIViewExtension.swift in Sources */,
 				0B4C85E92011F3ED00043C46 /* AppDelegate.swift in Sources */,
 				0B4C85FC2011F53400043C46 /* HomeViewController.swift in Sources */,
-				0B774491201581A20032A969 /* VVVViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
